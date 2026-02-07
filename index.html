@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+ <meta charset="utf-8" />
+ <meta name="viewport" content="width=device-width,initial-scale=1" />
+ <title>A Tiny Experience for Nairuti </title>
+ <style>
+ body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 0; }
+ .wrap { max-width: 720px; margin: 0 auto; padding: 28px 18px 60px; line-height: 1.45; }
+ .card { border: 1px solid #eee; border-radius: 16px; padding: 18px; margin: 14px 0; }
+ h1 { font-size: 26px; margin: 0 0 10px; }
+ h2 { font-size: 18px; margin: 0 0 10px; }
+ p { margin: 10px 0; font-size: 16px; }
+ .choices { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+ button {
+ border-radius: 999px; padding: 10px 14px; border: 1px solid #ddd;
+ background: white; cursor: pointer; font-size: 15px;
+ }
+ button:hover { transform: translateY(-1px); }
+ .small { opacity: .75; font-size: 13px; margin-top: 8px; }
+ .center { text-align: center; }
+ </style>
+</head>
+<body>
+ <div class="wrap">
+ <div class="card">
+ <h1>Hi Nairuti </h1>
+ <p class="small">
+ This is a short interactive experience.<br>
+ There are choices. None of them are wrong.<br>
+ You are being lightly judged though.
+ </p>
+ </div>
+
+ <div id="app" class="card"></div>
+
+ <div class="small center">Built from far away. Intention included.</div>
+ </div>
+
+ <script>
+ const herName = "Nairuti";
+
+ const scenes = {
+ s1: {
+ title: "Scene 1: A Very Normal Morning",
+ text: `You wake up. You check your phone. There’s a message from someone who should probably chill but absolutely will not.`,
+ choices: [
+ { label: "A) Open it confidently", next: "s2a" },
+ { label: "B) Ignore it to assert dominance", next: "s2b" },
+ ],
+ },
+ s2a: {
+ title: "Scene 2: Bold Choice",
+ text: `You open the message.\n\nIt says:\n“Distance didn’t change my choice. It just made me miss you more than I care to admit.”`,
+ choices: [
+ { label: "A) Smile (subtle)", next: "s3" },
+ { label: "B) Pretend you’re unimpressed", next: "s3" },
+ ],
+ },
+ s2b: {
+ title: "Scene 2: Risky Behavior",
+ text: `You ignore the message.\n\nNine seconds later, curiosity wins.\n\nIt says:\n“Distance didn’t change my choice. It just made me miss you more than I care to admit.”`,
+ choices: [
+ { label: "A) Fine. Read it properly.", next: "s3" },
+ { label: "B) Screenshot for later analysis", next: "s3" },
+ ],
+ },
+ s3: {
+ title: "Scene 3: Things Escalate",
+ text: `The sender clears their throat and decides to be serious for exactly five seconds.\n\nThey address ${herName}.`,
+ choices: [
+ { label: "Continue (no pressure)", next: "final" },
+ ],
+ },
+ final: {
+ title: "Final Scene: An Important Question",
+ text: `${herName}, this part requires honesty.\n\nWould you officially be *that person* with me on February 14? `,
+ choices: [
+ { label: "A) Yes", next: "yay" },
+ { label: "B) Obviously yes", next: "yay" },
+ { label: "C) Clarify what that means", next: "clarify" },
+ ],
+ },
+ clarify: {
+ title: "Clarification",
+ text: `It means:\n• Flirting without limits\n• Celebrating us from different cities\n• Me being annoying in a romantic way\n\nNow that we’re clear…`,
+ choices: [
+ { label: "A) Yes", next: "yay" },
+ { label: "B) Obviously yes", next: "yay" },
+ ],
+ },
+ yay: {
+ title: "Correct Outcome ",
+ text: `Excellent choice, ${herName}.\n\nPlease take a screenshot of this moment.\nThen send it to me so I can pretend I’m calm (I’m not).\n\nI’ll call you when you’re ready.`,
+ choices: [
+ { label: "Replay (because ego)", next: "s1" },
+ ],
+ },
+ };
+
+ const app = document.getElementById("app");
+
+ function render(sceneId) {
+ const s = scenes[sceneId];
+ const formattedText = String(s.text).replace(/\n/g, "<br>");
+ app.innerHTML = `
+ <h2>${s.title}</h2>
+ <p>${formattedText}</p>
+ <div class="choices">
+ ${s.choices.map(c => `<button data-next="${c.next}">${c.label}</button>`).join("")}
+ </div>
+ `;
+ app.querySelectorAll("button").forEach(btn => {
+ btn.addEventListener("click", () => render(btn.dataset.next));
+ });
+ }
+
+ render("s1");
+ </script>
+</body>
+</html>
