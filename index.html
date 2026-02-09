@@ -4,6 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Transmission</title>
+
 <style>
 :root{
 --bg1:#0f1020;
@@ -13,8 +14,7 @@
 --muted:#d9d2ffcc;
 --accent:#ff4d8d;
 --accent2:#ffcc70;
---shadow: 0 20px 70px #00000050;
---radius: 22px;
+--radius:22px;
 }
 *{box-sizing:border-box}
 body{
@@ -23,616 +23,177 @@ min-height:100vh;
 display:flex;
 align-items:center;
 justify-content:center;
-font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
 color:var(--text);
 background:
 radial-gradient(1200px 600px at 20% 15%, #ff4d8d35, transparent 60%),
 radial-gradient(900px 500px at 80% 80%, #ffcc7030, transparent 55%),
-linear-gradient(135deg, var(--bg1), var(--bg2));
+linear-gradient(135deg,var(--bg1),var(--bg2));
 overflow:hidden;
 }
-
-/* Background sparkle layer - MUST NOT steal clicks */
 .sparkle{
 position:absolute;
 inset:-60px;
 background-image:
 radial-gradient(circle at 10% 20%, #ffffff25 0 2px, transparent 2px),
-radial-gradient(circle at 70% 30%, #ffffff20 0 1.5px, transparent 1.5px),
-radial-gradient(circle at 40% 80%, #ffffff15 0 1.5px, transparent 1.5px),
-radial-gradient(circle at 85% 60%, #ffffff18 0 1.5px, transparent 1.5px);
-background-size: 320px 280px;
-filter: blur(.2px);
+radial-gradient(circle at 70% 30%, #ffffff20 0 1.5px, transparent 1.5px);
+background-size:320px 280px;
 opacity:.6;
-animation: drift 18s linear infinite;
+animation:drift 18s linear infinite;
 pointer-events:none;
-z-index:0;
 }
 @keyframes drift{
-from{ transform: translate3d(0,0,0) }
-to{ transform: translate3d(-120px, 80px,0) }
+to{transform:translate3d(-120px,80px,0)}
 }
-
-canvas{
-position:fixed;
-inset:0;
-pointer-events:none;
-z-index:1;
-}
-
 .card{
-width:min(720px, 92vw);
-background: linear-gradient(180deg, #ffffff12, #ffffff08);
+width:min(720px,92vw);
+background:linear-gradient(180deg,#ffffff12,#ffffff08);
 border:1px solid var(--stroke);
 border-radius:var(--radius);
-box-shadow: var(--shadow);
 padding:28px;
-position:relative;
-backdrop-filter: blur(10px);
-z-index:2;
+backdrop-filter:blur(10px);
 }
-
-.topline{
-display:flex;
-align-items:center;
-justify-content:space-between;
-gap:12px;
-flex-wrap:wrap;
-margin-bottom:10px;
-}
-.badge{
-display:inline-flex;
-align-items:center;
-gap:10px;
-padding:10px 12px;
-border-radius:999px;
-background:#ffffff10;
-border:1px solid #ffffff1e;
-font-size:13px;
-color:var(--muted);
-}
-.dot{
-width:10px; height:10px; border-radius:50%;
-background: radial-gradient(circle, var(--accent2), var(--accent));
-box-shadow:0 0 18px #ff4d8d66;
-}
-h1{
-margin:12px 0 6px;
-font-size: clamp(26px, 3.6vw, 44px);
-line-height:1.05;
-letter-spacing:-0.02em;
-}
-p{
-margin:0;
-color:var(--muted);
-font-size: 16px;
-line-height:1.55;
-}
-
-.panel{
-margin-top:18px;
-padding:18px;
-border-radius:18px;
-background:#00000020;
-border:1px solid #ffffff14;
-}
-
-.row{
-display:flex;
-gap:12px;
-flex-wrap:wrap;
-align-items:center;
-margin-top:12px;
-}
-
+.screen{display:none}
+.screen.active{display:block}
 button{
-border:none;
 cursor:pointer;
 padding:12px 14px;
 border-radius:14px;
-font-weight:750;
-font-size:15px;
-transition: transform .12s ease, filter .12s ease;
-user-select:none;
-touch-action: manipulation;
-}
-button:hover{ filter:brightness(1.06) }
-button:active{ transform: scale(.98) }
-
-.soft{
-background:#ffffff12;
-border:1px solid #ffffff24;
-color:#ffffffd8;
-}
-.primary{
-background: linear-gradient(90deg, var(--accent2), var(--accent));
-color:#270612;
-box-shadow: 0 18px 40px #ff4d8d2d;
-}
-.good{
-background: linear-gradient(90deg, #3be38b, #2ad17b);
-color:#072112;
-box-shadow: 0 18px 40px #2ad17b2a;
-}
-.danger{
-background: linear-gradient(90deg, #ff5a6a, #ff2f55);
-color:#2b070c;
-box-shadow: 0 18px 40px #ff2f5520;
-position:relative;
-}
-
-.divider{
-height:1px;
-background: linear-gradient(90deg, transparent, #ffffff22, transparent);
-margin:16px 0;
-}
-
-.screen{
-display:none;
-animation: pop .18s ease-out;
-}
-.screen.active{ display:block; }
-
-@keyframes pop{
-from{ transform: translateY(6px); opacity:0 }
-to{ transform: translateY(0); opacity:1 }
-}
-
-.terminal{
-font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-background:#00000035;
-border:1px solid #ffffff18;
-border-radius:16px;
-padding:14px;
-color:#ffffffd8;
-line-height:1.55;
-}
-.terminal .dim{ color:#ffffff9e }
-.terminal .hl{
-background: #ffffff12;
-border:1px solid #ffffff1f;
-padding:2px 8px;
-border-radius:999px;
-display:inline-block;
-margin:0 2px;
-}
-
-.sliderWrap{
-margin-top:10px;
-padding:12px;
-border-radius:16px;
-background:#ffffff10;
-border:1px solid #ffffff18;
-}
-input[type="range"]{
-width:100%;
-accent-color: var(--accent);
-}
-.meter{
-display:flex;
-justify-content:space-between;
-font-size:12px;
-color:#ffffffb0;
-margin-top:8px;
-}
-
-.chips{
-display:flex;
-gap:10px;
-flex-wrap:wrap;
-margin-top:10px;
-}
-.chip{
-padding:10px 12px;
-border-radius:999px;
-border:1px solid #ffffff24;
-background:#ffffff12;
-cursor:pointer;
-user-select:none;
+border:none;
 font-weight:700;
-color:#ffffffc8;
-transition: transform .12s ease, background .12s ease;
 }
-.chip:hover{ transform: translateY(-1px) }
-.chip.revealed{
-background: linear-gradient(90deg, #ffcc7030, #ff4d8d25);
-color:#fff;
-border-color:#ffffff2a;
+.primary{background:linear-gradient(90deg,var(--accent2),var(--accent))}
+.soft{background:#ffffff18;color:#fff}
+.good{background:linear-gradient(90deg,#3be38b,#2ad17b)}
+.danger{background:linear-gradient(90deg,#ff5a6a,#ff2f55)}
+.name{
+background:linear-gradient(90deg,var(--accent2),var(--accent));
+-webkit-background-clip:text;
+color:transparent;
+font-weight:900;
 }
-
-.codeRow{
-display:flex;
-gap:10px;
-flex-wrap:wrap;
-align-items:center;
-margin-top:10px;
-}
-.codeInput{
-flex:1;
-min-width: 200px;
-padding:12px 12px;
+input{
+padding:12px;
 border-radius:14px;
 border:1px solid #ffffff24;
 background:#00000025;
 color:#fff;
-font-size:15px;
-outline:none;
+font-size:16px;
 }
-.codeInput::placeholder{ color:#ffffff80 }
-
-.hint{
-margin-top:10px;
-font-size:13px;
-color:#ffffffa8;
-display:flex;
-gap:8px;
-align-items:center;
-}
-
-.big{
-font-size:18px;
-color:#fff;
-margin-top:8px;
-line-height:1.55;
-}
-
-.name{
-background: linear-gradient(90deg, var(--accent2), var(--accent));
--webkit-background-clip:text;
-background-clip:text;
-color:transparent;
-font-weight:900;
-}
-
-.footer{
-margin-top:16px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-gap:10px;
-flex-wrap:wrap;
-color:#ffffff9c;
-font-size:13px;
-}
-
-.shake{ animation: shake .28s ease-in-out 1; }
-@keyframes shake{
-0%{ transform: translateX(0) }
-25%{ transform: translateX(-7px) }
-50%{ transform: translateX(7px) }
-75%{ transform: translateX(-4px) }
-100%{ transform: translateX(0) }
-}
+input::placeholder{color:#ffffff80}
 </style>
 </head>
 
 <body>
 <div class="sparkle"></div>
-<canvas id="confetti"></canvas>
 
 <main class="card" id="card">
-<div class="topline">
-<div class="badge"><span class="dot"></span> secure transmission • do not panic</div>
-<div class="badge">recipient: <b class="name">Nairuti</b> </div>
-</div>
-
-<h1>CLASSIFIED: <span class="name">Project “Us”</span></h1>
-<p>
-This page is not what it looks like. 
-It’s a small mystery made for one specific person… you.
-</p>
-
-<div class="panel">
 
 <!-- SCREEN 0 -->
-<section class="screen active" id="s0">
-<div class="terminal">
-<div><span class="dim">[boot]</span> establishing connection…</div>
-<div><span class="dim">[status]</span> distance detected </div>
-<div><span class="dim">[status]</span> missing you… aggressively </div>
-<div class="divider"></div>
-<div><span class="dim">[notice]</span> to proceed, you must help me tune the signal.</div>
-</div>
-
-<div class="row">
-<button class="primary" id="beginBtn">Begin mission </button>
-<button class="soft" id="fastBtn" title="No judgment. Slight judgment.">I’m impatient </button>
-</div>
-<div class="hint"> <span>PS: This is a secret. Don’t assume you know the ending yet.</span></div>
+<section class="screen active">
+<p><b>Secure transmission established.</b></p>
+<button class="primary" onclick="show(1)">Begin mission </button>
+<button class="soft" onclick="show(2)">I’m impatient </button>
 </section>
 
 <!-- SCREEN 1 -->
-<section class="screen" id="s1">
-<div class="terminal">
-<div><span class="dim">[task 1]</span> calibrate the signal</div>
-<div><span class="dim">[rule]</span> slide until the meter reads <span class="hl">100%</span>.</div>
-</div>
-
-<div class="sliderWrap">
-<input type="range" min="0" max="100" value="37" id="signal" />
-<div class="meter">
-<span>0%</span>
-<span id="sigText">signal: 37%</span>
-<span>100%</span>
-</div>
-</div>
-
-<div class="row">
-<button class="soft" id="back1">Back</button>
-<button class="primary" id="next1" disabled>Continue </button>
-</div>
-<div class="hint"> <span>Pro tip: perfection is attractive. (So are you.)</span></div>
+<section class="screen">
+<p>Calibrate the signal</p>
+<input type="range" min="0" max="100" value="37" id="signal">
+<div id="sigText">signal: 37%</div>
+<button class="soft" onclick="show(0)">Back</button>
+<button class="primary" id="next1" onclick="show(2)" disabled>Continue </button>
 </section>
 
 <!-- SCREEN 2 -->
-<section class="screen" id="s2">
-<div class="terminal">
-<div><span class="dim">[task 2]</span> decode the phrase</div>
-<div><span class="dim">[rule]</span> tap each token to reveal the message.</div>
-</div>
-
-<div class="chips" id="chips"></div>
-
-<div class="row">
-<button class="soft" id="back2">Back</button>
-<button class="primary" id="next2" disabled>Unlock final step </button>
-</div>
-<div class="hint"> <span>There are <b id="leftCount">15</b> hidden tokens left.</span></div>
+<section class="screen">
+<p>Decode the phrase</p>
+<div id="chips"></div>
+<button class="soft" onclick="show(1)">Back</button>
+<button class="primary" id="next2" onclick="show(3)" disabled>Unlock </button>
 </section>
 
 <!-- SCREEN 3 -->
-<section class="screen" id="s3">
-<div class="terminal">
-<div><span class="dim">[task 3]</span> enter the access code</div>
-<div><span class="dim">[hint]</span> <span class="hl">Anniversary</span>: <span class="hl">01/26</span></div>
-</div>
+<section class="screen">
+<p><b>Hint:</b> Anniversary</p>
 
-<div class="codeRow">
-<input class="codeInput" id="code" placeholder="Type access code (hint: 01/26)" inputmode="text" />
-<button class="primary" id="checkCode">Verify </button>
-</div>
+<input id="code" placeholder="MM/DD" inputmode="text">
 
-<div class="row">
-<button class="soft" id="back3">Back</button>
-<button class="primary" id="revealBtn" disabled>Reveal message </button>
-</div>
-<div class="hint"> <span id="codeHint">No pressure. Just… destiny.</span></div>
+<button class="primary" onclick="verify()">Verify </button>
+
+<button class="soft" onclick="show(2)">Back</button>
+<button class="primary" id="revealBtn" onclick="show(4)" disabled>Reveal </button>
+
+<div id="codeHint">No pressure. Just… destiny.</div>
 </section>
 
-<!-- SCREEN 4 (REVEAL) -->
-<section class="screen" id="s4">
-<div class="terminal">
-<div><span class="dim">[decrypted]</span> message for: <span class="hl">Nairuti</span></div>
-<div><span class="dim">[priority]</span> extremely important</div>
-<div class="divider"></div>
-<div class="big" id="finalLine">
-Okay… I tried to keep it secret, but I can’t anymore.
-<br><br>
+<!-- SCREEN 4 -->
+<section class="screen">
+<p id="finalLine">
 <b><span class="name">Nairuti</span>, will you be my Valentine?</b>
-</div>
-</div>
-
-<div class="row" style="margin-top:14px; position:relative;">
-<button class="good" id="yesBtn">Yes </button>
+</p>
+<button class="good" onclick="yes()">Yes </button>
 <button class="danger" id="noBtn">No </button>
-<button class="soft" id="resetBtn" title="Re-run the mission (because you’re cute)">Replay </button>
-</div>
-
-<div class="hint"> <span id="afterText">Choose wisely </span></div>
 </section>
 
-</div>
-
-<div class="footer">
-<span>built with love + mischief</span>
-<span>tip: open on your phone too </span>
-</div>
 </main>
 
 <script>
-// ---------- helpers ----------
-const $ = (id) => document.getElementById(id);
-const screens = ["s0","s1","s2","s3","s4"].map($);
+const screens=[...document.querySelectorAll(".screen")];
+function show(n){screens.forEach((s,i)=>s.classList.toggle("active",i===n))}
 
-function show(n){
-screens.forEach((el,i)=> el.classList.toggle("active", i===n));
-// keep focus sensible on mobile
-if(n===1) $("signal").focus({preventScroll:true});
-if(n===3) $("code").focus({preventScroll:true});
-}
+const signal=document.getElementById("signal");
+const sigText=document.getElementById("sigText");
+const next1=document.getElementById("next1");
+signal.oninput=()=>{
+sigText.textContent=`signal: ${signal.value}%`;
+next1.disabled=Number(signal.value)<99;
+};
 
-// ---------- confetti ----------
-const canvas = $("confetti");
-const ctx = canvas.getContext("2d");
-let W,H,confetti=[];
-function resize(){
-W = canvas.width = window.innerWidth * devicePixelRatio;
-H = canvas.height = window.innerHeight * devicePixelRatio;
-}
-window.addEventListener("resize", resize);
-resize();
-
-function burstConfetti(){
-confetti = [];
-const count = 160;
-for(let i=0;i<count;i++){
-confetti.push({
-x: Math.random()*W,
-y: -20*devicePixelRatio,
-r: (Math.random()*6+3)*devicePixelRatio,
-vx: (Math.random()*2-1)*devicePixelRatio*2,
-vy: (Math.random()*3+2)*devicePixelRatio*2,
-a: Math.random()*Math.PI*2,
-va: (Math.random()*0.2-0.1)
-});
-}
-let t = 0;
-function tick(){
-t++;
-ctx.clearRect(0,0,W,H);
-confetti.forEach(p=>{
-p.x += p.vx;
-p.y += p.vy;
-p.a += p.va;
-p.vy += 0.06*devicePixelRatio;
-ctx.save();
-ctx.translate(p.x,p.y);
-ctx.rotate(p.a);
-ctx.fillStyle = "rgba(255,255,255,0.85)";
-ctx.fillRect(-p.r/2, -p.r/2, p.r, p.r);
-ctx.restore();
-});
-confetti = confetti.filter(p => p.y < H + 40*devicePixelRatio);
-if(t < 220 && confetti.length) requestAnimationFrame(tick);
-else ctx.clearRect(0,0,W,H);
-}
-tick();
-}
-
-// ---------- screen 0 ----------
-$("beginBtn").addEventListener("click", ()=> show(1));
-$("fastBtn").addEventListener("click", ()=> show(2)); // still makes her do *some* play
-
-// ---------- screen 1: slider ----------
-const signal = $("signal");
-const sigText = $("sigText");
-const next1 = $("next1");
-signal.addEventListener("input", ()=>{
-sigText.textContent = `signal: ${signal.value}%`;
-// friendlier: allow 99+ to pass (mobile-friendly)
-next1.disabled = !(Number(signal.value) >= 99);
-});
-$("back1").addEventListener("click", ()=> show(0));
-next1.addEventListener("click", ()=> show(2));
-
-// ---------- screen 2: tap-to-reveal tokens ----------
-const phrase = ["I","miss","you","so","much","and","I","love","you","more","than","miles","can","handle","."];
-// small secret: a playful message once fully revealed
-const chipsEl = $("chips");
-const next2 = $("next2");
-const leftCount = $("leftCount");
-let revealed = 0;
-
-function buildChips(){
-chipsEl.innerHTML = "";
-revealed = 0;
-phrase.forEach((w, idx)=>{
-const c = document.createElement("div");
-c.className = "chip";
-c.textContent = "•••";
-c.dataset.word = w;
-c.dataset.revealed = "0";
-c.addEventListener("click", ()=>{
-if(c.dataset.revealed === "1") return;
-c.dataset.revealed = "1";
-c.classList.add("revealed");
-c.textContent = c.dataset.word;
+const phrase=["I","miss","you","so","much","and","I","love","you"];
+const chips=document.getElementById("chips");
+const next2=document.getElementById("next2");
+let revealed=0;
+phrase.forEach(w=>{
+const c=document.createElement("button");
+c.className="soft";
+c.textContent="•••";
+c.onclick=()=>{
+if(c.textContent!=="•••")return;
+c.textContent=w;
 revealed++;
-const left = phrase.length - revealed;
-leftCount.textContent = left;
-if(left === 0){
-next2.disabled = false;
-}
+if(revealed===phrase.length)next2.disabled=false;
+};
+chips.appendChild(c);
 });
-chipsEl.appendChild(c);
-});
-leftCount.textContent = phrase.length;
-next2.disabled = true;
-}
 
-buildChips();
-
-$("back2").addEventListener("click", ()=> show(1));
-next2.addEventListener("click", ()=> show(3));
-
-// ---------- screen 3: code ----------
-const code = $("code");
-const checkCode = $("checkCode");
-const revealBtn = $("revealBtn");
-const codeHint = $("codeHint");
+const code=document.getElementById("code");
+const revealBtn=document.getElementById("revealBtn");
+const codeHint=document.getElementById("codeHint");
 
 function normalize(v){
-return (v||"").replace(/\s+/g,"").trim().replace(/-/g,"/"); // 01-26 -> 01/26
+return (v||"").replace(/\s+/g,"").replace(/-/g,"/");
 }
 
 function verify(){
-const v = normalize(code.value);
-if(v === "01/26" || v === "0126"){
-codeHint.textContent = "Access granted. (You’re dangerously smart.)";
-revealBtn.disabled = false;
-return true;
-} else {
-codeHint.textContent = "Nope Try again. Hint: Anniversary (01/26)";
-// little shake feedback
-$("card").classList.remove("shake");
-void $("card").offsetWidth;
-$("card").classList.add("shake");
-revealBtn.disabled = true;
-return false;
+const v=normalize(code.value);
+if(v==="01/26"||v==="0126"){
+codeHint.textContent="Access granted.";
+revealBtn.disabled=false;
+}else{
+codeHint.textContent="Nope Think Anniversary.";
 }
 }
-checkCode.addEventListener("click", verify);
-code.addEventListener("keydown", (e)=>{
-if(e.key === "Enter") verify();
-});
 
-$("back3").addEventListener("click", ()=> show(2));
-revealBtn.addEventListener("click", ()=> show(4));
-
-// ---------- screen 4: yes/no ----------
-const yesBtn = $("yesBtn");
-const noBtn = $("noBtn");
-const afterText = $("afterText");
-const finalLine = $("finalLine");
-
-yesBtn.addEventListener("click", ()=>{
-afterText.textContent = "Okay good. I’m smiling like an idiot now.";
-finalLine.innerHTML = `
-<b>YES CONFIRMED </b><br><br>
-<b><span class="name">Nairuti</span>, you just made my whole day.</b><br>
-I can’t wait to be in the same city for Valentine’s Day…<br>
-and make up for every mile. 
-`;
-burstConfetti();
-});
-
-function dodge(){
-// move the "No" button around a bit inside its row
-const row = noBtn.parentElement;
-const rect = row.getBoundingClientRect();
-const maxX = Math.max(0, rect.width - noBtn.offsetWidth - 10);
-const x = Math.random() * Math.min(180, maxX);
-const y = (Math.random()*14 - 7);
-noBtn.style.transform = `translate(${x}px, ${y}px)`;
-afterText.textContent = "Nice try ";
+function yes(){
+document.getElementById("finalLine").innerHTML=
+"<b>YES CONFIRMED </b><br>You just made my whole day.";
 }
 
-// Desktop hover + mobile tap
-noBtn.addEventListener("mouseenter", dodge);
-noBtn.addEventListener("click", (e)=>{
-e.preventDefault();
-dodge();
-});
-
-$("resetBtn").addEventListener("click", ()=>{
-// reset everything
-show(0);
-signal.value = 37;
-sigText.textContent = "signal: 37%";
-next1.disabled = true;
-buildChips();
-code.value = "";
-codeHint.textContent = "No pressure. Just… destiny.";
-revealBtn.disabled = true;
-afterText.textContent = "Choose wisely ";
-finalLine.innerHTML = `
-Okay… I tried to keep it secret, but I can’t anymore.
-<br><br>
-<b><span class="name">Nairuti</span>, will you be my Valentine?</b>
-`;
-noBtn.style.transform = "translate(0,0)";
-ctx.clearRect(0,0,canvas.width,canvas.height);
-});
+document.getElementById("noBtn").onmouseenter=()=>{
+noBtn.style.transform=
+`translate(${Math.random()*120-60}px,${Math.random()*10-5}px)`;
+};
 </script>
 </body>
 </html>
