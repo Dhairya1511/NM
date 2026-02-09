@@ -1,121 +1,425 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
- <meta charset="utf-8" />
- <meta name="viewport" content="width=device-width,initial-scale=1" />
- <title>A Tiny Experience for Nairuti </title>
+ <meta charset="UTF-8" />
+ <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+ <title>Nairuti, will you be my Valentine?</title>
  <style>
- body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 0; }
- .wrap { max-width: 720px; margin: 0 auto; padding: 28px 18px 60px; line-height: 1.45; }
- .card { border: 1px solid #eee; border-radius: 16px; padding: 18px; margin: 14px 0; }
- h1 { font-size: 26px; margin: 0 0 10px; }
- h2 { font-size: 18px; margin: 0 0 10px; }
- p { margin: 10px 0; font-size: 16px; }
- .choices { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
- button {
- border-radius: 999px; padding: 10px 14px; border: 1px solid #ddd;
- background: white; cursor: pointer; font-size: 15px;
+ :root{
+ --bg1:#0f1020;
+ --bg2:#22112f;
+ --card:#ffffff10;
+ --stroke:#ffffff20;
+ --text:#f7f5ff;
+ --muted:#d9d2ffcc;
+ --accent:#ff4d8d;
+ --accent2:#ffcc70;
+ --yes:#3be38b;
+ --no:#ff5a6a;
+ --shadow: 0 20px 70px #00000050;
+ --radius: 22px;
  }
- button:hover { transform: translateY(-1px); }
- .small { opacity: .75; font-size: 13px; margin-top: 8px; }
- .center { text-align: center; }
+ *{box-sizing:border-box}
+ body{
+ margin:0;
+ min-height:100vh;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+ color:var(--text);
+ background:
+ radial-gradient(1200px 600px at 20% 15%, #ff4d8d35, transparent 60%),
+ radial-gradient(900px 500px at 80% 80%, #ffcc7030, transparent 55%),
+ linear-gradient(135deg, var(--bg1), var(--bg2));
+ overflow:hidden;
+ }
+ .sparkle{
+ position:absolute;
+ inset:-50px;
+ background-image:
+ radial-gradient(circle at 10% 20%, #ffffff25 0 2px, transparent 2px),
+ radial-gradient(circle at 70% 30%, #ffffff20 0 1.5px, transparent 1.5px),
+ radial-gradient(circle at 40% 80%, #ffffff15 0 1.5px, transparent 1.5px),
+ radial-gradient(circle at 85% 60%, #ffffff18 0 1.5px, transparent 1.5px);
+ background-size: 320px 280px;
+ filter: blur(.2px);
+ opacity:.6;
+ animation: drift 18s linear infinite;
+ pointer-events:none;
+ }
+ @keyframes drift{
+ from{ transform: translate3d(0,0,0) }
+ to{ transform: translate3d(-120px, 80px,0) }
+ }
+
+ .card{
+ width:min(680px, 92vw);
+ background: linear-gradient(180deg, #ffffff12, #ffffff08);
+ border:1px solid var(--stroke);
+ border-radius:var(--radius);
+ box-shadow: var(--shadow);
+ padding:28px;
+ position:relative;
+ backdrop-filter: blur(10px);
+ }
+ .topline{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:12px;
+ margin-bottom:10px;
+ }
+ .badge{
+ display:inline-flex;
+ align-items:center;
+ gap:10px;
+ padding:10px 12px;
+ border-radius:999px;
+ background:#ffffff10;
+ border:1px solid #ffffff1e;
+ font-size:14px;
+ color:var(--muted);
+ }
+ .dot{
+ width:10px; height:10px; border-radius:50%;
+ background: radial-gradient(circle, var(--accent2), var(--accent));
+ box-shadow:0 0 20px #ff4d8d66;
+ }
+ h1{
+ margin:12px 0 6px;
+ font-size: clamp(28px, 3.8vw, 44px);
+ line-height:1.05;
+ letter-spacing:-0.02em;
+ }
+ .name{
+ background: linear-gradient(90deg, var(--accent2), var(--accent));
+ -webkit-background-clip:text;
+ background-clip:text;
+ color:transparent;
+ }
+ p{
+ margin:0;
+ color:var(--muted);
+ font-size: 16px;
+ line-height:1.55;
+ }
+
+ .panel{
+ margin-top:18px;
+ padding:18px;
+ border-radius:18px;
+ background:#00000020;
+ border:1px solid #ffffff14;
+ }
+
+ .prompt{
+ font-size:18px;
+ color:#fff;
+ margin-bottom:14px;
+ }
+
+ .btnrow{
+ display:flex;
+ flex-wrap:wrap;
+ gap:12px;
+ align-items:center;
+ margin-top:10px;
+ position:relative;
+ }
+ button{
+ border:none;
+ cursor:pointer;
+ padding:14px 16px;
+ border-radius:14px;
+ font-weight:700;
+ font-size:16px;
+ transition: transform .12s ease, filter .12s ease, box-shadow .12s ease;
+ user-select:none;
+ }
+ button:active{ transform: scale(.98) }
+ .yes{
+ background: linear-gradient(90deg, #3be38b, #2ad17b);
+ box-shadow: 0 18px 40px #2ad17b35;
+ color:#072112;
+ }
+ .no{
+ background: linear-gradient(90deg, #ff5a6a, #ff2f55);
+ box-shadow: 0 18px 40px #ff2f5530;
+ color:#2b070c;
+ position:relative;
+ }
+ .soft{
+ background:#ffffff12;
+ border:1px solid #ffffff24;
+ color:#ffffffd0;
+ font-weight:650;
+ }
+ button:hover{ filter:brightness(1.06) }
+
+ .small{
+ font-size:13px;
+ color:#ffffffa8;
+ margin-top:10px;
+ }
+ .divider{
+ height:1px;
+ background: linear-gradient(90deg, transparent, #ffffff22, transparent);
+ margin:18px 0;
+ }
+
+ .steps{
+ display:grid;
+ gap:10px;
+ margin-top:12px;
+ }
+ .step{
+ display:flex;
+ gap:10px;
+ align-items:flex-start;
+ padding:12px;
+ border-radius:16px;
+ background:#ffffff10;
+ border:1px solid #ffffff18;
+ }
+ .num{
+ width:28px; height:28px;
+ border-radius:10px;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ font-weight:800;
+ background:linear-gradient(90deg, #ffcc70, #ff4d8d);
+ color:#230915;
+ flex:none;
+ }
+ .step b{ color:#fff }
+ .step span{ color:var(--muted) }
+
+ .footer{
+ margin-top:16px;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ gap:10px;
+ flex-wrap:wrap;
+ color:#ffffff9c;
+ font-size:13px;
+ }
+ a{
+ color:#ffffffd0;
+ text-decoration:none;
+ border-bottom:1px dashed #ffffff55;
+ }
+
+ /* Confetti canvas */
+ canvas{
+ position:fixed;
+ inset:0;
+ pointer-events:none;
+ }
+
+ /* Modal-ish final screen */
+ .final{
+ display:none;
+ margin-top:18px;
+ padding:18px;
+ border-radius:18px;
+ border:1px solid #ffffff25;
+ background: linear-gradient(180deg, #ffffff18, #ffffff0c);
+ }
+ .final h2{
+ margin:0 0 6px;
+ font-size: 22px;
+ letter-spacing:-0.01em;
+ }
+ .final p{
+ margin:0;
+ color:#fff;
+ opacity:.9;
+ }
+
+ /* Shake on “No” click */
+ .shake{
+ animation: shake .28s ease-in-out 1;
+ }
+ @keyframes shake{
+ 0%{ transform: translateX(0) }
+ 25%{ transform: translateX(-7px) }
+ 50%{ transform: translateX(7px) }
+ 75%{ transform: translateX(-4px) }
+ 100%{ transform: translateX(0) }
+ }
+
+ .hint{
+ margin-top:10px;
+ font-size:13px;
+ color:#ffffffa8;
+ display:flex;
+ gap:8px;
+ align-items:center;
+ }
+ .hint .heart{
+ filter: drop-shadow(0 0 10px #ff4d8d66);
+ }
  </style>
 </head>
+
 <body>
- <div class="wrap">
- <div class="card">
- <h1>Hi Nairuti </h1>
- <p class="small">
- This is a short interactive experience.<br>
- There are choices. None of them are wrong.<br>
- You are being lightly judged though.
+ <div class="sparkle"></div>
+ <canvas id="confetti"></canvas>
+
+ <main class="card" id="card">
+ <div class="topline">
+ <div class="badge"><span class="dot"></span> A tiny long-distance love mission</div>
+ <div class="badge">For <b class="name">Nairuti</b> </div>
+ </div>
+
+ <h1>
+ Hey <span class="name">Nairuti</span> —
+ I have a question…
+ </h1>
+ <p>
+ I wish I could ask you in person right now, but since distance thinks it’s funny,
+ I made something sweet (and a little silly) instead.
  </p>
+
+ <div class="panel" id="panel">
+ <div class="prompt" id="prompt">
+ Ready for a 20-second adventure?
  </div>
 
- <div id="app" class="card"></div>
-
- <div class="small center">Built from far away. Intention included.</div>
+ <div class="btnrow" id="btnrow">
+ <button class="soft" id="startBtn">Start </button>
+ <button class="soft" id="skipBtn" title="If you're impatient (I love that about you)">Skip to the question </button>
  </div>
 
- <script>
- const herName = "Nairuti";
+ <div class="divider"></div>
 
- const scenes = {
- s1: {
- title: "Scene 1: A Very Normal Morning",
- text: `You wake up. You check your phone. There’s a message from someone who should probably chill but absolutely will not.`,
- choices: [
- { label: "A) Open it confidently", next: "s2a" },
- { label: "B) Ignore it to assert dominance", next: "s2b" },
- ],
- },
- s2a: {
- title: "Scene 2: Bold Choice",
- text: `You open the message.\n\nIt says:\n“Distance didn’t change my choice. It just made me miss you more than I care to admit.”`,
- choices: [
- { label: "A) Smile (subtle)", next: "s3" },
- { label: "B) Pretend you’re unimpressed", next: "s3" },
- ],
- },
- s2b: {
- title: "Scene 2: Risky Behavior",
- text: `You ignore the message.\n\nNine seconds later, curiosity wins.\n\nIt says:\n“Distance didn’t change my choice. It just made me miss you more than I care to admit.”`,
- choices: [
- { label: "A) Fine. Read it properly.", next: "s3" },
- { label: "B) Screenshot for later analysis", next: "s3" },
- ],
- },
- s3: {
- title: "Scene 3: Things Escalate",
- text: `The sender clears their throat and decides to be serious for exactly five seconds.\n\nThey address ${herName}.`,
- choices: [
- { label: "Continue (no pressure)", next: "final" },
- ],
- },
- final: {
- title: "Final Scene: An Important Question",
- text: `${herName}, this part requires honesty.\n\nWould you officially be *that person* with me on February 14? `,
- choices: [
- { label: "A) Yes", next: "yay" },
- { label: "B) Obviously yes", next: "yay" },
- { label: "C) Clarify what that means", next: "clarify" },
- ],
- },
- clarify: {
- title: "Clarification",
- text: `It means:\n• Flirting without limits\n• Celebrating us from different cities\n• Me being annoying in a romantic way\n\nNow that we’re clear…`,
- choices: [
- { label: "A) Yes", next: "yay" },
- { label: "B) Obviously yes", next: "yay" },
- ],
- },
- yay: {
- title: "Correct Outcome ",
- text: `Excellent choice, ${herName}.\n\nPlease take a screenshot of this moment.\nThen send it to me so I can pretend I’m calm (I’m not).\n\nI’ll call you when you’re ready.`,
- choices: [
- { label: "Replay (because ego)", next: "s1" },
- ],
- },
- };
-
- const app = document.getElementById("app");
-
- function render(sceneId) {
- const s = scenes[sceneId];
- const formattedText = String(s.text).replace(/\n/g, "<br>");
- app.innerHTML = `
- <h2>${s.title}</h2>
- <p>${formattedText}</p>
- <div class="choices">
- ${s.choices.map(c => `<button data-next="${c.next}">${c.label}</button>`).join("")}
+ <div class="steps" id="steps" aria-live="polite">
+ <div class="step">
+ <div class="num">1</div>
+ <div>
+ <b>Smile check</b><br/>
+ <span>Because your smile is my favorite notification.</span>
  </div>
- `;
- app.querySelectorAll("button").forEach(btn => {
- btn.addEventListener("click", () => render(btn.dataset.next));
- });
+ </div>
+ <div class="step">
+ <div class="num">2</div>
+ <div>
+ <b>Heart check</b><br/>
+ <span>Mine’s been yours for a while. Just saying.</span>
+ </div>
+ </div>
+ <div class="step">
+ <div class="num">3</div>
+ <div>
+ <b>Future check</b><br/>
+ <span>I can’t wait for the day “long distance” is just a story we tell.</span>
+ </div>
+ </div>
+ </div>
+
+ <div class="hint"><span class="heart"> </span><span id="hintText">Tap <b>Start</b> when you’re ready.</span></div>
+
+ <div class="final" id="final">
+ <h2>Okay, moment of truth…</h2>
+ <p id="finalText"></p>
+ <div class="btnrow" style="margin-top:14px; position:relative;">
+ <button class="yes" id="yesBtn">Yes </button>
+ <button class="no" id="noBtn">No </button>
+ </div>
+ <div class="small" id="smallNote"></div>
+ </div>
+ </div>
+
+ <div class="footer">
+ <span>Made with love, mischief, and excellent taste.</span>
+ <span>Tip: turn your volume up (optional)</span>
+ </div>
+ </main>
+
+<script>
+ // --- Simple tiny "ding" sound (no external file) ---
+ // Creates a soft chime using WebAudio if allowed.
+ let audioCtx;
+ function chime(freq=523.25, duration=0.12){
+ try{
+ audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+ const o = audioCtx.createOscillator();
+ const g = audioCtx.createGain();
+ o.type = "sine";
+ o.frequency.value = freq;
+ g.gain.value = 0.001;
+ o.connect(g); g.connect(audioCtx.destination);
+ o.start();
+ g.gain.exponentialRampToValueAtTime(0.08, audioCtx.currentTime + 0.01);
+ g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+ o.stop(audioCtx.currentTime + duration + 0.02);
+ } catch(e){}
  }
 
- render("s1");
- </script>
-</body>
-</html>
+ const startBtn = document.getElementById("startBtn");
+ const skipBtn = document.getElementById("skipBtn");
+ const prompt = document.getElementById("prompt");
+ const steps = document.getElementById("steps");
+ const hintText = document.getElementById("hintText");
+
+ const finalBox = document.getElementById("final");
+ const finalText= document.getElementById("finalText");
+ const smallNote= document.getElementById("smallNote");
+
+ const yesBtn = document.getElementById("yesBtn");
+ const noBtn = document.getElementById("noBtn");
+ const card = document.getElementById("card");
+
+ let stepIndex = 0;
+
+ const lines = [
+ "Step 1 complete: you’re adorable. (Verified.)",
+ "Step 2 complete: my heart did the thing again.",
+ "Step 3 complete: I miss you… and I’m proud you’re mine.",
+ "Final step: I have one important question."
+ ];
+
+ function showFinal(){
+ prompt.textContent = "Final step unlocked ";
+ steps.style.display = "none";
+ finalBox.style.display = "block";
+ hintText.innerHTML = "Choose wisely ";
+ finalText.textContent = "Nairuti… will you be my Valentine?";
+ smallNote.textContent = "P.S. If you press “No”, the button might get… shy.";
+ chime(659.25, 0.10);
+ chime(783.99, 0.12);
+ }
+
+ function advance(){
+ chime(587.33, 0.08);
+ if(stepIndex < lines.length - 1){
+ prompt.textContent = lines[stepIndex];
+ hintText.textContent = "Keep going… I’m smiling over here.";
+ stepIndex++;
+ if(stepIndex === 3){
+ startBtn.textContent = "Continue ";
+ }
+ if(stepIndex === 3){
+ // next click shows final
+ }
+ return;
+ }
+ showFinal();
+ }
+
+ startBtn.addEventListener("click", () => {
+ if(stepIndex === 0){
+ prompt.textContent = "Okay. First: I miss you.";
+ hintText.textContent = "Tap again (I made it easy on purpose).";
+ stepIndex = 1;
+ chime(523.25, 0.10);
+ return;
+ }
+ if(stepIndex <= 3){
+ if(stepIndex === 3){
+ showFinal();
+ } else {
+ prompt.textContent =
