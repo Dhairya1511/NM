@@ -3,19 +3,16 @@
 <head>
  <meta charset="UTF-8" />
  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
- <title>Nairuti, will you be my Valentine?</title>
+ <title>Transmission</title>
  <style>
  :root{
  --bg1:#0f1020;
  --bg2:#22112f;
- --card:#ffffff10;
  --stroke:#ffffff20;
  --text:#f7f5ff;
  --muted:#d9d2ffcc;
  --accent:#ff4d8d;
  --accent2:#ffcc70;
- --yes:#3be38b;
- --no:#ff5a6a;
  --shadow: 0 20px 70px #00000050;
  --radius: 22px;
  }
@@ -26,7 +23,7 @@
  display:flex;
  align-items:center;
  justify-content:center;
- font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+ font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
  color:var(--text);
  background:
  radial-gradient(1200px 600px at 20% 15%, #ff4d8d35, transparent 60%),
@@ -34,9 +31,11 @@
  linear-gradient(135deg, var(--bg1), var(--bg2));
  overflow:hidden;
  }
+
+ /* Background sparkle layer - MUST NOT steal clicks */
  .sparkle{
  position:absolute;
- inset:-50px;
+ inset:-60px;
  background-image:
  radial-gradient(circle at 10% 20%, #ffffff25 0 2px, transparent 2px),
  radial-gradient(circle at 70% 30%, #ffffff20 0 1.5px, transparent 1.5px),
@@ -47,14 +46,22 @@
  opacity:.6;
  animation: drift 18s linear infinite;
  pointer-events:none;
+ z-index:0;
  }
  @keyframes drift{
  from{ transform: translate3d(0,0,0) }
  to{ transform: translate3d(-120px, 80px,0) }
  }
 
+ canvas{
+ position:fixed;
+ inset:0;
+ pointer-events:none;
+ z-index:1;
+ }
+
  .card{
- width:min(680px, 92vw);
+ width:min(720px, 92vw);
  background: linear-gradient(180deg, #ffffff12, #ffffff08);
  border:1px solid var(--stroke);
  border-radius:var(--radius);
@@ -62,12 +69,15 @@
  padding:28px;
  position:relative;
  backdrop-filter: blur(10px);
+ z-index:2;
  }
+
  .topline{
  display:flex;
  align-items:center;
  justify-content:space-between;
  gap:12px;
+ flex-wrap:wrap;
  margin-bottom:10px;
  }
  .badge{
@@ -78,25 +88,19 @@
  border-radius:999px;
  background:#ffffff10;
  border:1px solid #ffffff1e;
- font-size:14px;
+ font-size:13px;
  color:var(--muted);
  }
  .dot{
  width:10px; height:10px; border-radius:50%;
  background: radial-gradient(circle, var(--accent2), var(--accent));
- box-shadow:0 0 20px #ff4d8d66;
+ box-shadow:0 0 18px #ff4d8d66;
  }
  h1{
  margin:12px 0 6px;
- font-size: clamp(28px, 3.8vw, 44px);
+ font-size: clamp(26px, 3.6vw, 44px);
  line-height:1.05;
  letter-spacing:-0.02em;
- }
- .name{
- background: linear-gradient(90deg, var(--accent2), var(--accent));
- -webkit-background-clip:text;
- background-clip:text;
- color:transparent;
  }
  p{
  margin:0;
@@ -113,88 +117,172 @@
  border:1px solid #ffffff14;
  }
 
- .prompt{
- font-size:18px;
- color:#fff;
- margin-bottom:14px;
+ .row{
+ display:flex;
+ gap:12px;
+ flex-wrap:wrap;
+ align-items:center;
+ margin-top:12px;
  }
 
- .btnrow{
- display:flex;
- flex-wrap:wrap;
- gap:12px;
- align-items:center;
- margin-top:10px;
- position:relative;
- }
  button{
  border:none;
  cursor:pointer;
- padding:14px 16px;
+ padding:12px 14px;
  border-radius:14px;
- font-weight:700;
- font-size:16px;
- transition: transform .12s ease, filter .12s ease, box-shadow .12s ease;
+ font-weight:750;
+ font-size:15px;
+ transition: transform .12s ease, filter .12s ease;
  user-select:none;
+ touch-action: manipulation;
  }
+ button:hover{ filter:brightness(1.06) }
  button:active{ transform: scale(.98) }
- .yes{
- background: linear-gradient(90deg, #3be38b, #2ad17b);
- box-shadow: 0 18px 40px #2ad17b35;
- color:#072112;
- }
- .no{
- background: linear-gradient(90deg, #ff5a6a, #ff2f55);
- box-shadow: 0 18px 40px #ff2f5530;
- color:#2b070c;
- position:relative;
- }
+
  .soft{
  background:#ffffff12;
  border:1px solid #ffffff24;
- color:#ffffffd0;
- font-weight:650;
+ color:#ffffffd8;
  }
- button:hover{ filter:brightness(1.06) }
+ .primary{
+ background: linear-gradient(90deg, var(--accent2), var(--accent));
+ color:#270612;
+ box-shadow: 0 18px 40px #ff4d8d2d;
+ }
+ .good{
+ background: linear-gradient(90deg, #3be38b, #2ad17b);
+ color:#072112;
+ box-shadow: 0 18px 40px #2ad17b2a;
+ }
+ .danger{
+ background: linear-gradient(90deg, #ff5a6a, #ff2f55);
+ color:#2b070c;
+ box-shadow: 0 18px 40px #ff2f5520;
+ position:relative;
+ }
 
- .small{
- font-size:13px;
- color:#ffffffa8;
- margin-top:10px;
- }
  .divider{
  height:1px;
  background: linear-gradient(90deg, transparent, #ffffff22, transparent);
- margin:18px 0;
+ margin:16px 0;
  }
 
- .steps{
- display:grid;
- gap:10px;
- margin-top:12px;
+ .screen{
+ display:none;
+ animation: pop .18s ease-out;
  }
- .step{
- display:flex;
- gap:10px;
- align-items:flex-start;
+ .screen.active{ display:block; }
+
+ @keyframes pop{
+ from{ transform: translateY(6px); opacity:0 }
+ to{ transform: translateY(0); opacity:1 }
+ }
+
+ .terminal{
+ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+ background:#00000035;
+ border:1px solid #ffffff18;
+ border-radius:16px;
+ padding:14px;
+ color:#ffffffd8;
+ line-height:1.55;
+ }
+ .terminal .dim{ color:#ffffff9e }
+ .terminal .hl{
+ background: #ffffff12;
+ border:1px solid #ffffff1f;
+ padding:2px 8px;
+ border-radius:999px;
+ display:inline-block;
+ margin:0 2px;
+ }
+
+ .sliderWrap{
+ margin-top:10px;
  padding:12px;
  border-radius:16px;
  background:#ffffff10;
  border:1px solid #ffffff18;
  }
- .num{
- width:28px; height:28px;
- border-radius:10px;
- display:flex;
- align-items:center;
- justify-content:center;
- font-weight:800;
- background:linear-gradient(90deg, #ffcc70, #ff4d8d);
- color:#230915;
- flex:none;
+ input[type="range"]{
+ width:100%;
+ accent-color: var(--accent);
  }
- .step b{ color:#fff }
- .step span{ color:var(--muted) }
+ .meter{
+ display:flex;
+ justify-content:space-between;
+ font-size:12px;
+ color:#ffffffb0;
+ margin-top:8px;
+ }
+
+ .chips{
+ display:flex;
+ gap:10px;
+ flex-wrap:wrap;
+ margin-top:10px;
+ }
+ .chip{
+ padding:10px 12px;
+ border-radius:999px;
+ border:1px solid #ffffff24;
+ background:#ffffff12;
+ cursor:pointer;
+ user-select:none;
+ font-weight:700;
+ color:#ffffffc8;
+ transition: transform .12s ease, background .12s ease;
+ }
+ .chip:hover{ transform: translateY(-1px) }
+ .chip.revealed{
+ background: linear-gradient(90deg, #ffcc7030, #ff4d8d25);
+ color:#fff;
+ border-color:#ffffff2a;
+ }
+
+ .codeRow{
+ display:flex;
+ gap:10px;
+ flex-wrap:wrap;
+ align-items:center;
+ margin-top:10px;
+ }
+ .codeInput{
+ flex:1;
+ min-width: 200px;
+ padding:12px 12px;
+ border-radius:14px;
+ border:1px solid #ffffff24;
+ background:#00000025;
+ color:#fff;
+ font-size:15px;
+ outline:none;
+ }
+ .codeInput::placeholder{ color:#ffffff80 }
+
+ .hint{
+ margin-top:10px;
+ font-size:13px;
+ color:#ffffffa8;
+ display:flex;
+ gap:8px;
+ align-items:center;
+ }
+
+ .big{
+ font-size:18px;
+ color:#fff;
+ margin-top:8px;
+ line-height:1.55;
+ }
+
+ .name{
+ background: linear-gradient(90deg, var(--accent2), var(--accent));
+ -webkit-background-clip:text;
+ background-clip:text;
+ color:transparent;
+ font-weight:900;
+ }
 
  .footer{
  margin-top:16px;
@@ -206,61 +294,14 @@
  color:#ffffff9c;
  font-size:13px;
  }
- a{
- color:#ffffffd0;
- text-decoration:none;
- border-bottom:1px dashed #ffffff55;
- }
 
- /* Confetti canvas */
- canvas{
- position:fixed;
- inset:0;
- pointer-events:none;
- }
-
- /* Modal-ish final screen */
- .final{
- display:none;
- margin-top:18px;
- padding:18px;
- border-radius:18px;
- border:1px solid #ffffff25;
- background: linear-gradient(180deg, #ffffff18, #ffffff0c);
- }
- .final h2{
- margin:0 0 6px;
- font-size: 22px;
- letter-spacing:-0.01em;
- }
- .final p{
- margin:0;
- color:#fff;
- opacity:.9;
- }
-
- /* Shake on “No” click */
- .shake{
- animation: shake .28s ease-in-out 1;
- }
+ .shake{ animation: shake .28s ease-in-out 1; }
  @keyframes shake{
  0%{ transform: translateX(0) }
  25%{ transform: translateX(-7px) }
  50%{ transform: translateX(7px) }
  75%{ transform: translateX(-4px) }
  100%{ transform: translateX(0) }
- }
-
- .hint{
- margin-top:10px;
- font-size:13px;
- color:#ffffffa8;
- display:flex;
- gap:8px;
- align-items:center;
- }
- .hint .heart{
- filter: drop-shadow(0 0 10px #ff4d8d66);
  }
  </style>
 </head>
@@ -271,155 +312,324 @@
 
  <main class="card" id="card">
  <div class="topline">
- <div class="badge"><span class="dot"></span> A tiny long-distance love mission</div>
- <div class="badge">For <b class="name">Nairuti</b> </div>
+ <div class="badge"><span class="dot"></span> secure transmission • do not panic</div>
+ <div class="badge">recipient: <b class="name">Nairuti</b> </div>
  </div>
 
- <h1>
- Hey <span class="name">Nairuti</span> —
- I have a question…
- </h1>
+ <h1>CLASSIFIED: <span class="name">Project “Us”</span></h1>
  <p>
- I wish I could ask you in person right now, but since distance thinks it’s funny,
- I made something sweet (and a little silly) instead.
+ This page is not what it looks like. 
+ It’s a small mystery made for one specific person… you.
  </p>
 
- <div class="panel" id="panel">
- <div class="prompt" id="prompt">
- Ready for a 20-second adventure?
- </div>
+ <div class="panel">
 
- <div class="btnrow" id="btnrow">
- <button class="soft" id="startBtn">Start </button>
- <button class="soft" id="skipBtn" title="If you're impatient (I love that about you)">Skip to the question </button>
- </div>
-
+ <!-- SCREEN 0 -->
+ <section class="screen active" id="s0">
+ <div class="terminal">
+ <div><span class="dim">[boot]</span> establishing connection…</div>
+ <div><span class="dim">[status]</span> distance detected </div>
+ <div><span class="dim">[status]</span> missing you… aggressively </div>
  <div class="divider"></div>
-
- <div class="steps" id="steps" aria-live="polite">
- <div class="step">
- <div class="num">1</div>
- <div>
- <b>Smile check</b><br/>
- <span>Because your smile is my favorite notification.</span>
- </div>
- </div>
- <div class="step">
- <div class="num">2</div>
- <div>
- <b>Heart check</b><br/>
- <span>Mine’s been yours for a while. Just saying.</span>
- </div>
- </div>
- <div class="step">
- <div class="num">3</div>
- <div>
- <b>Future check</b><br/>
- <span>I can’t wait for the day “long distance” is just a story we tell.</span>
- </div>
- </div>
+ <div><span class="dim">[notice]</span> to proceed, you must help me tune the signal.</div>
  </div>
 
- <div class="hint"><span class="heart"> </span><span id="hintText">Tap <b>Start</b> when you’re ready.</span></div>
+ <div class="row">
+ <button class="primary" id="beginBtn">Begin mission </button>
+ <button class="soft" id="fastBtn" title="No judgment. Slight judgment.">I’m impatient </button>
+ </div>
+ <div class="hint"> <span>PS: This is a secret. Don’t assume you know the ending yet.</span></div>
+ </section>
 
- <div class="final" id="final">
- <h2>Okay, moment of truth…</h2>
- <p id="finalText"></p>
- <div class="btnrow" style="margin-top:14px; position:relative;">
- <button class="yes" id="yesBtn">Yes </button>
- <button class="no" id="noBtn">No </button>
+ <!-- SCREEN 1 -->
+ <section class="screen" id="s1">
+ <div class="terminal">
+ <div><span class="dim">[task 1]</span> calibrate the signal</div>
+ <div><span class="dim">[rule]</span> slide until the meter reads <span class="hl">100%</span>.</div>
  </div>
- <div class="small" id="smallNote"></div>
+
+ <div class="sliderWrap">
+ <input type="range" min="0" max="100" value="37" id="signal" />
+ <div class="meter">
+ <span>0%</span>
+ <span id="sigText">signal: 37%</span>
+ <span>100%</span>
  </div>
+ </div>
+
+ <div class="row">
+ <button class="soft" id="back1">Back</button>
+ <button class="primary" id="next1" disabled>Continue </button>
+ </div>
+ <div class="hint"> <span>Pro tip: perfection is attractive. (So are you.)</span></div>
+ </section>
+
+ <!-- SCREEN 2 -->
+ <section class="screen" id="s2">
+ <div class="terminal">
+ <div><span class="dim">[task 2]</span> decode the phrase</div>
+ <div><span class="dim">[rule]</span> tap each token to reveal the message.</div>
+ </div>
+
+ <div class="chips" id="chips"></div>
+
+ <div class="row">
+ <button class="soft" id="back2">Back</button>
+ <button class="primary" id="next2" disabled>Unlock final step </button>
+ </div>
+ <div class="hint"> <span>There are <b id="leftCount">0</b> hidden tokens left.</span></div>
+ </section>
+
+ <!-- SCREEN 3 -->
+ <section class="screen" id="s3">
+ <div class="terminal">
+ <div><span class="dim">[task 3]</span> enter the access code</div>
+ <div><span class="dim">[hint]</span> it’s the <span class="hl">date</span> we celebrate love: <span class="hl">0214</span></div>
+ </div>
+
+ <div class="codeRow">
+ <input class="codeInput" id="code" placeholder="Type access code (hint: 0214)" inputmode="numeric" />
+ <button class="primary" id="checkCode">Verify </button>
+ </div>
+
+ <div class="row">
+ <button class="soft" id="back3">Back</button>
+ <button class="primary" id="revealBtn" disabled>Reveal message </button>
+ </div>
+ <div class="hint"> <span id="codeHint">No pressure. Just… destiny.</span></div>
+ </section>
+
+ <!-- SCREEN 4 (REVEAL) -->
+ <section class="screen" id="s4">
+ <div class="terminal">
+ <div><span class="dim">[decrypted]</span> message for: <span class="hl">Nairuti</span></div>
+ <div><span class="dim">[priority]</span> extremely important</div>
+ <div class="divider"></div>
+ <div class="big" id="finalLine">
+ Okay… I tried to keep it secret, but I can’t anymore.
+ <br><br>
+ <b><span class="name">Nairuti</span>, will you be my Valentine?</b>
+ </div>
+ </div>
+
+ <div class="row" style="margin-top:14px; position:relative;">
+ <button class="good" id="yesBtn">Yes </button>
+ <button class="danger" id="noBtn">No </button>
+ <button class="soft" id="resetBtn" title="Re-run the mission (because you’re cute)">Replay </button>
+ </div>
+
+ <div class="hint"> <span id="afterText">Choose wisely </span></div>
+ </section>
+
  </div>
 
  <div class="footer">
- <span>Made with love, mischief, and excellent taste.</span>
- <span>Tip: turn your volume up (optional)</span>
+ <span>built with love + mischief</span>
+ <span>tip: open on your phone too </span>
  </div>
  </main>
 
 <script>
- // --- Simple tiny "ding" sound (no external file) ---
- // Creates a soft chime using WebAudio if allowed.
- let audioCtx;
- function chime(freq=523.25, duration=0.12){
- try{
- audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
- const o = audioCtx.createOscillator();
- const g = audioCtx.createGain();
- o.type = "sine";
- o.frequency.value = freq;
- g.gain.value = 0.001;
- o.connect(g); g.connect(audioCtx.destination);
- o.start();
- g.gain.exponentialRampToValueAtTime(0.08, audioCtx.currentTime + 0.01);
- g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
- o.stop(audioCtx.currentTime + duration + 0.02);
- } catch(e){}
+ // ---------- helpers ----------
+ const $ = (id) => document.getElementById(id);
+ const screens = ["s0","s1","s2","s3","s4"].map($);
+
+ function show(n){
+ screens.forEach((el,i)=> el.classList.toggle("active", i===n));
+ // keep focus sensible on mobile
+ if(n===1) $("signal").focus({preventScroll:true});
+ if(n===3) $("code").focus({preventScroll:true});
  }
 
- const startBtn = document.getElementById("startBtn");
- const skipBtn = document.getElementById("skipBtn");
- const prompt = document.getElementById("prompt");
- const steps = document.getElementById("steps");
- const hintText = document.getElementById("hintText");
+ // ---------- confetti ----------
+ const canvas = $("confetti");
+ const ctx = canvas.getContext("2d");
+ let W,H,confetti=[];
+ function resize(){
+ W = canvas.width = window.innerWidth * devicePixelRatio;
+ H = canvas.height = window.innerHeight * devicePixelRatio;
+ }
+ window.addEventListener("resize", resize);
+ resize();
 
- const finalBox = document.getElementById("final");
- const finalText= document.getElementById("finalText");
- const smallNote= document.getElementById("smallNote");
-
- const yesBtn = document.getElementById("yesBtn");
- const noBtn = document.getElementById("noBtn");
- const card = document.getElementById("card");
-
- let stepIndex = 0;
-
- const lines = [
- "Step 1 complete: you’re adorable. (Verified.)",
- "Step 2 complete: my heart did the thing again.",
- "Step 3 complete: I miss you… and I’m proud you’re mine.",
- "Final step: I have one important question."
- ];
-
- function showFinal(){
- prompt.textContent = "Final step unlocked ";
- steps.style.display = "none";
- finalBox.style.display = "block";
- hintText.innerHTML = "Choose wisely ";
- finalText.textContent = "Nairuti… will you be my Valentine?";
- smallNote.textContent = "P.S. If you press “No”, the button might get… shy.";
- chime(659.25, 0.10);
- chime(783.99, 0.12);
+ function burstConfetti(){
+ confetti = [];
+ const count = 160;
+ for(let i=0;i<count;i++){
+ confetti.push({
+ x: Math.random()*W,
+ y: -20*devicePixelRatio,
+ r: (Math.random()*6+3)*devicePixelRatio,
+ vx: (Math.random()*2-1)*devicePixelRatio*2,
+ vy: (Math.random()*3+2)*devicePixelRatio*2,
+ a: Math.random()*Math.PI*2,
+ va: (Math.random()*0.2-0.1)
+ });
+ }
+ let t = 0;
+ function tick(){
+ t++;
+ ctx.clearRect(0,0,W,H);
+ confetti.forEach(p=>{
+ p.x += p.vx;
+ p.y += p.vy;
+ p.a += p.va;
+ p.vy += 0.06*devicePixelRatio;
+ ctx.save();
+ ctx.translate(p.x,p.y);
+ ctx.rotate(p.a);
+ ctx.fillStyle = "rgba(255,255,255,0.85)";
+ ctx.fillRect(-p.r/2, -p.r/2, p.r, p.r);
+ ctx.restore();
+ });
+ confetti = confetti.filter(p => p.y < H + 40*devicePixelRatio);
+ if(t < 220 && confetti.length) requestAnimationFrame(tick);
+ else ctx.clearRect(0,0,W,H);
+ }
+ tick();
  }
 
- function advance(){
- chime(587.33, 0.08);
- if(stepIndex < lines.length - 1){
- prompt.textContent = lines[stepIndex];
- hintText.textContent = "Keep going… I’m smiling over here.";
- stepIndex++;
- if(stepIndex === 3){
- startBtn.textContent = "Continue ";
+ // ---------- screen 0 ----------
+ $("beginBtn").addEventListener("click", ()=> show(1));
+ $("fastBtn").addEventListener("click", ()=> show(2)); // still makes her do *some* play
+
+ // ---------- screen 1: slider ----------
+ const signal = $("signal");
+ const sigText = $("sigText");
+ const next1 = $("next1");
+ signal.addEventListener("input", ()=>{
+ sigText.textContent = `signal: ${signal.value}%`;
+ next1.disabled = !(Number(signal.value) === 100);
+ });
+ $("back1").addEventListener("click", ()=> show(0));
+ next1.addEventListener("click", ()=> show(2));
+
+ // ---------- screen 2: tap-to-reveal tokens ----------
+ const phrase = ["I","miss","you","so","much","and","I","love","you","more","than","miles","can","handle","."];
+ // small secret: a playful message once fully revealed
+ const chipsEl = $("chips");
+ const next2 = $("next2");
+ const leftCount = $("leftCount");
+ let revealed = 0;
+
+ function buildChips(){
+ chipsEl.innerHTML = "";
+ revealed = 0;
+ phrase.forEach((w, idx)=>{
+ const c = document.createElement("div");
+ c.className = "chip";
+ c.textContent = "•••";
+ c.dataset.word = w;
+ c.dataset.revealed = "0";
+ c.addEventListener("click", ()=>{
+ if(c.dataset.revealed === "1") return;
+ c.dataset.revealed = "1";
+ c.classList.add("revealed");
+ c.textContent = c.dataset.word;
+ revealed++;
+ const left = phrase.length - revealed;
+ leftCount.textContent = left;
+ if(left === 0){
+ next2.disabled = false;
  }
- if(stepIndex === 3){
- // next click shows final
- }
- return;
- }
- showFinal();
+ });
+ chipsEl.appendChild(c);
+ });
+ leftCount.textContent = phrase.length;
+ next2.disabled = true;
  }
 
- startBtn.addEventListener("click", () => {
- if(stepIndex === 0){
- prompt.textContent = "Okay. First: I miss you.";
- hintText.textContent = "Tap again (I made it easy on purpose).";
- stepIndex = 1;
- chime(523.25, 0.10);
- return;
- }
- if(stepIndex <= 3){
- if(stepIndex === 3){
- showFinal();
+ buildChips();
+
+ $("back2").addEventListener("click", ()=> show(1));
+ next2.addEventListener("click", ()=> show(3));
+
+ // ---------- screen 3: code ----------
+ const code = $("code");
+ const checkCode = $("checkCode");
+ const revealBtn = $("revealBtn");
+ const codeHint = $("codeHint");
+
+ function normalize(v){ return (v||"").replace(/\s+/g,"").trim(); }
+
+ function verify(){
+ const v = normalize(code.value);
+ if(v === "0214"){
+ codeHint.textContent = "Access granted. (You’re dangerously smart.)";
+ revealBtn.disabled = false;
+ return true;
  } else {
- prompt.textContent =
+ codeHint.textContent = "Nope Try again. Hint: 0214";
+ // little shake feedback
+ $("card").classList.remove("shake");
+ void $("card").offsetWidth;
+ $("card").classList.add("shake");
+ revealBtn.disabled = true;
+ return false;
+ }
+ }
+ checkCode.addEventListener("click", verify);
+ code.addEventListener("keydown", (e)=>{
+ if(e.key === "Enter") verify();
+ });
+
+ $("back3").addEventListener("click", ()=> show(2));
+ revealBtn.addEventListener("click", ()=> show(4));
+
+ // ---------- screen 4: yes/no ----------
+ const yesBtn = $("yesBtn");
+ const noBtn = $("noBtn");
+ const afterText = $("afterText");
+ const finalLine = $("finalLine");
+
+ yesBtn.addEventListener("click", ()=>{
+ afterText.textContent = "Okay good. I’m smiling like an idiot now.";
+ finalLine.innerHTML = `
+ <b>YES CONFIRMED </b><br><br>
+ <b><span class="name">Nairuti</span>, you just made my whole day.</b><br>
+ I can’t wait to be in the same city for Valentine’s Day…<br>
+ and make up for every mile. 
+ `;
+ burstConfetti();
+ });
+
+ function dodge(){
+ // move the "No" button around a bit inside its row
+ const row = noBtn.parentElement;
+ const rect = row.getBoundingClientRect();
+ const maxX = Math.max(0, rect.width - noBtn.offsetWidth - 10);
+ const x = Math.random() * Math.min(180, maxX);
+ const y = (Math.random()*14 - 7);
+ noBtn.style.transform = `translate(${x}px, ${y}px)`;
+ afterText.textContent = "Nice try ";
+ }
+
+ // Desktop hover + mobile tap
+ noBtn.addEventListener("mouseenter", dodge);
+ noBtn.addEventListener("click", (e)=>{
+ e.preventDefault();
+ dodge();
+ });
+
+ $("resetBtn").addEventListener("click", ()=>{
+ // reset everything
+ show(0);
+ signal.value = 37;
+ sigText.textContent = "signal: 37%";
+ next1.disabled = true;
+ buildChips();
+ code.value = "";
+ codeHint.textContent = "No pressure. Just… destiny.";
+ revealBtn.disabled = true;
+ afterText.textContent = "Choose wisely ";
+ finalLine.innerHTML = `
+ Okay… I tried to keep it secret, but I can’t anymore.
+ <br><br>
+ <b><span class="name">Nairuti</span>, will you be my Valentine?</b>
+ `;
+ noBtn.style.transform = "translate(0,0)";
+ ctx.clearRect(0,0,canvas.width,canvas.height);
+ });
+</script>
+</body>
+</html>
